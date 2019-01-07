@@ -1,0 +1,2 @@
+module SheepAChangelog
+end

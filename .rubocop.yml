@@ -1,0 +1,20 @@
+AllCops:
+  TargetRubyVersion: 2.2
+Style/ClassAndModuleChildren:
+  EnforcedStyle: nested
+Documentation:
+  Enabled: false
+Layout/IndentArray:
+  EnforcedStyle: consistent
+Metrics/LineLength:
+  Exclude:
+    - 'spec/**/*.rb'
+
+Metrics/BlockLength:
+  Exclude:
+    - 'Rakefile'
+    - '**/*.rake'
+    - 'spec/**/*.rb'
+Style/ClassVars:
+  Exclude:
+    - 'spec/**/*.rb'

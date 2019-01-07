@@ -1,0 +1,5 @@
+.yardoc
+doc
+Gemfile.lock
+sheep-a-changelog*.gem
+coverage
