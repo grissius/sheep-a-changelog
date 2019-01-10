@@ -1,5 +1,6 @@
 module SheepAChangelog
   class Node
+    attr_accessor :lines, :nodes
     def self.parse(string)
       new(string.split("\n"))
     end
@@ -34,7 +35,6 @@ module SheepAChangelog
 
     # Create node hierarchy from keep-a-changeloh markdown lines
     def initialize(lines, title = :empty, level = 0)
-      # @all_lines = lines
       @title = title
       @nodes = build_nodes(lines, level)
       @level = level
@@ -60,6 +60,10 @@ module SheepAChangelog
     # Print the markdown output
     def to_s
       all_lines.join("\n")
+    end
+
+    def build_tree
+      { title: @title, lines: @lines, nodes: @nodes.map(&:build_tree) }
     end
   end
 end
