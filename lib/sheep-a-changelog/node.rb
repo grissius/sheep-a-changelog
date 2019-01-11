@@ -9,24 +9,28 @@ module SheepAChangelog
       '#' * n
     end
 
+    def h_regexp(level)
+      Regexp.new('^' + hashes(level) + '\s+([\S\s]+)$')
+    end
+
     # Contruct nodes for current node from all lines
     def build_nodes(lines, next_level)
       last = nil
-      nodes = []
       line_buff = []
-      lines.map do |line|
-        match = line.match(Regexp.new('^' + hashes(next_level) + '\s+([\S\s]+)$'))
-        heading = match && match.captures.first
-        if heading
-          @lines, nodes = last.nil? ? [line_buff, nodes] : [@lines, nodes << Node.new(line_buff, last, next_level)]
+      (lines + [:last]).each_with_object([]) do |line, nodes|
+        heading = line[h_regexp(next_level), 1] if line.is_a? String
+        if heading || line == :last
+          if last.nil?
+            @lines = line_buff
+          else
+            nodes << Node.new(line_buff, last, next_level)
+          end
           last = heading
           line_buff = []
         else
           line_buff << line
         end
       end
-      @lines, nodes = last.nil? ? [line_buff, nodes] : [@lines, nodes << Node.new(line_buff, last, next_level)]
-      nodes
     end
 
     # Create node hierarchy from keep-a-changeloh markdown lines
@@ -58,6 +62,7 @@ module SheepAChangelog
       all_lines.join("\n")
     end
 
+    # Serialize tree to the hashes
     def build_tree
       { title: @title, lines: @lines, nodes: @nodes.map(&:build_tree) }
     end
