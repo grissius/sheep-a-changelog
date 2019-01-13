@@ -33,10 +33,25 @@ module SheepAChangelog
       end
     end
 
+    def self.pick_lines(lines)
+      content_lines = []
+      anchor_lines = []
+      lines.each do |line|
+        if line =~ /^\[.*\].*\s*:\s*\S+$/
+          anchor_lines << line
+        else
+          content_lines << line
+        end
+      end
+      [content_lines, anchor_lines]
+    end
+
     # Create node hierarchy from keep-a-changeloh markdown lines
     def initialize(lines, title = :empty, level = 0)
+      content_lines, anchor_lines = Node.pick_lines(lines)
       @title = title
-      @nodes = build_nodes(lines, level + 1)
+      @anchor_lines = anchor_lines
+      @nodes = build_nodes(content_lines, level + 1)
       @level = level
     end
 
@@ -54,6 +69,7 @@ module SheepAChangelog
       res << format_heading if @title != :empty
       res += @lines unless @lines.empty?
       res += @nodes.map(&:all_lines) unless @nodes.empty?
+      res += @anchor_lines unless @anchor_lines.empty?
       res
     end
 
@@ -64,7 +80,10 @@ module SheepAChangelog
 
     # Serialize tree to the hashes
     def build_tree
-      { title: @title, lines: @lines, nodes: @nodes.map(&:build_tree) }
+      { title: @title,
+        lines: @lines,
+        anchor_nodes: @anchor_lines,
+        nodes: @nodes.map(&:build_tree) }
     end
   end
 end
