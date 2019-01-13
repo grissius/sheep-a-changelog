@@ -9,6 +9,11 @@ Layout/IndentArray:
 Metrics/LineLength:
   Exclude:
     - 'spec/**/*.rb'
+Naming/UncommunicativeMethodParamName:
+  MinNameLength: 0
+Naming/FileName:
+  Exclude:
+    - 'lib/sheep-a-changelog.rb'
 
 Metrics/BlockLength:
   Exclude:

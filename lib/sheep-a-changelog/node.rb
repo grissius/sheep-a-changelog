@@ -14,7 +14,7 @@ module SheepAChangelog
     end
 
     # Contruct nodes for current node from all lines
-    def build_nodes(lines, next_level)
+    def build_nodes(lines, next_level) # rubocop:disable Metrics/MethodLength
       last = nil
       line_buff = []
       (lines + [:last]).each_with_object([]) do |line, nodes|
