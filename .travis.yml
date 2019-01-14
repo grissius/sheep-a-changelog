@@ -1,10 +1,15 @@
 language: ruby
 rvm:
-  - 2.2
-  - 2.3
-  - 2.4
-  - 2.5
-
+- 2.2
+- 2.3
+- 2.4
+- 2.5
 script:
-  - bundle exec rake test
-  - bundle exec rake cs
+- bundle exec rake test
+- bundle exec rake cs
+deploy:
+  provider: rubygems
+  api_key:
+    secure: vR2x6+ACNbr8TInjdMQGaF2EzY679rAMWJE93XNv/NPm1QXmy5XJpXKqbox87bAMJf8D/tzeaf34Cy34SPQAhwIBzfu08RUxhviK/lM0NJIUK9TkW5FTjWnBSvQXi4hvvo3N2u522HSpjaER0JuzUXgnQ9HO6f9YEwawqsoWQQy4QYfQ4QC2sftSN2RfBZGnccUSW8YxejtX5EqMGY+j6T/HkZHP0W4HUqJsJdNssDUa1Y1XbBxquiYvcfzNFTLUkZvItqnz7IGMF+ILFxgv3+nuM8KSPhgHWMPx1Y4wSDUhambfvHcDC/w5Qqa0j7GUAsS/ZdRZv9g/+EIiXJ0BUkzRUynC8blLM9W5jvMz166FuUCfgZ71ToPwGnDr0Izcetpr3tSnp/gfupvcn97k461v7IeuNSwA4k05rvlokQgjOxnAgFU6TggLRACDDy/HXZsaSSZkOKmArMjBQ45HAzYEYUQAsbmC0vHTz2gkofsjkifcSwpJWyEblwTEPrseK6m5VWV6ADNcR2kMM1UxLy4HxbKhcUHMHKlIQ/i43aryRh2+ldg/twxqZTJj+UQ1amTuvaSO2MF+89/EEOHYEWag6J+BaCTj121Zv3nkwdbQEeHJrjor8QR+Ys/t0Mq25P5E+WX698ulOtjCudq1F4ocvI1nMLfNz62Ej2eorxo=
+  on:
+    tags: true
