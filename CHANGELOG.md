@@ -6,11 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2019-01-14
+### Fixed
+- Meta data tests
+
 ## [0.1.0] - 2019-01-14
 ### Added
 - Project boilerplate
 - Parser
 - Readme
 
-[Unreleased]: https://github.com/AckeeCZ/desmond/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/AckeeCZ/desmond/compare/c0b1f8c...v0.1.0
+[Unreleased]: https://github.com/grissius/sheep-a-changelog/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/grissius/sheep-a-changelog/compare/v0.1.0...v0.1.1
+[0.1.0]: https://github.com/grissius/sheep-a-changelog/compare/c0b1f8c...v0.1.0
