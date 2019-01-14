@@ -1,6 +1,5 @@
 ---
 "./spec/sheep-a-changelog/meta_spec.rb[1:1]":
-  :version: 0.0.0
   :author: Jaroslav Šmolík
   :name: sheep-a-changelog
   :description: Simple, particular, example driven parser of keep-a-changelog format.
