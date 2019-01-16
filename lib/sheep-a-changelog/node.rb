@@ -47,7 +47,7 @@ module SheepAChangelog
     end
 
     # Create node hierarchy from keep-a-changeloh markdown lines
-    def initialize(lines, title = :empty, level = 0)
+    def initialize(lines, title, level)
       content_lines, anchor_lines = Node.pick_lines(lines)
       @title = title
       @anchor_lines = anchor_lines
