@@ -38,9 +38,9 @@ module SheepAChangelog
       content_lines = []
       anchors = []
       lines.each do |line|
-        groups = line.is_a?(Array) ? [] : line.scan(/^\[(.*)\]\s*:\s*(\S+)\s*$/)
+        groups = line.match(/^\[(.*)\]\s*:\s*(\S+)\s*$/).to_a
         if !groups.empty?
-          anchors << { v: groups.first[0], url: groups.first[1] }
+          anchors << { v: groups[1], url: groups[2] }
         else
           content_lines << line
         end
