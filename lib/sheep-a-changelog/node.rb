@@ -35,16 +35,18 @@ module SheepAChangelog
     end
 
     def self.pick_lines(lines)
-      content_lines = []
-      anchors = []
-      lines.each do |line|
+      # add matches for links
+      groups_lines = lines.inject([]) do |acc, line|
         groups = line.match(/^\[(.*)\]\s*:\s*(\S+)\s*$/).to_a
-        if !groups.empty?
-          anchors << { v: groups[1], url: groups[2] }
-        else
-          content_lines << line
-        end
+        acc + [[groups, line]]
       end
+      # if no matches, it is content lines
+      content_lines = groups_lines
+                      .select { |x| x.first.empty? }.map { |_, l| l }
+      # if matches, it is link
+      anchors = groups_lines
+                .reject { |x| x.first.empty? }
+                .map { |groups, _| { v: groups[1], url: groups[2] } }
       [content_lines, anchors]
     end
 
