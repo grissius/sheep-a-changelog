@@ -22,5 +22,6 @@ RSpec.describe SheepAChangelog::Document do
     new_version = 'foo_bar'
     doc.rename_version('[Unreleased]', new_version)
     expect(doc.first_version).to match(new_version)
+    expect(doc.build_tree).to match_snapshot
   end
 end

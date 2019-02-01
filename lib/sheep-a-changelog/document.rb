@@ -19,7 +19,11 @@ module SheepAChangelog
     def rename_version(from, to)
       parent = version_root
       parent.nodes = parent.nodes.map do |node|
-        Node.new(node.all_lines, to, 2) if node.title == from
+        if node.title == from
+          Node.new(node.all_lines_wo_heading.first, to, 2)
+        else
+          node
+        end
       end
     end
   end

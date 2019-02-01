@@ -71,6 +71,12 @@ module SheepAChangelog
     def all_lines
       res = []
       res << format_heading if @title != :empty
+      res += all_lines_wo_heading
+      res
+    end
+
+    def all_lines_wo_heading
+      res = []
       res += @lines
       res += @nodes.map(&:all_lines)
       res += @anchors.map { |a| "[#{a[:v]}]: #{a[:url]}" }
