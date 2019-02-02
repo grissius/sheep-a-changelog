@@ -1,9 +1,9 @@
-require_relative 'node'
+require_relative 'document'
 
 module SheepAChangelog
   module Parser
     def self.parse(contents)
-      doc = Node.parse(contents)
+      doc = Document.parse(contents)
       doc
     end
   end

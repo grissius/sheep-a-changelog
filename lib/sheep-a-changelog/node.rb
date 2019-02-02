@@ -1,6 +1,7 @@
 module SheepAChangelog
   class Node
-    attr_accessor :lines, :nodes
+    attr_reader :lines, :title
+    attr_accessor :nodes
     def self.parse(string)
       new(string.split("\n"))
     end
@@ -34,23 +35,26 @@ module SheepAChangelog
     end
 
     def self.pick_lines(lines)
-      content_lines = []
-      anchor_lines = []
-      lines.each do |line|
-        if line =~ /^\[.*\].*\s*:\s*\S+$/
-          anchor_lines << line
-        else
-          content_lines << line
-        end
+      # add matches for links
+      groups_lines = lines.inject([]) do |acc, line|
+        groups = line.match(/^\[(.*)\]\s*:\s*(\S+)\s*$/).to_a
+        acc + [[groups, line]]
       end
-      [content_lines, anchor_lines]
+      # if no matches, it is content lines
+      content_lines = groups_lines
+                      .select { |x| x.first.empty? }.map { |_, l| l }
+      # if matches, it is link
+      anchors = groups_lines
+                .reject { |x| x.first.empty? }
+                .map { |groups, _| { v: groups[1], url: groups[2] } }
+      [content_lines, anchors]
     end
 
     # Create node hierarchy from keep-a-changeloh markdown lines
-    def initialize(lines, title = :empty, level = 0)
-      content_lines, anchor_lines = Node.pick_lines(lines)
+    def initialize(lines, title, level)
+      content_lines, anchors = Node.pick_lines(lines)
       @title = title
-      @anchor_lines = anchor_lines
+      @anchors = anchors
       @nodes = build_nodes(content_lines, level + 1)
       @level = level
     end
@@ -67,9 +71,15 @@ module SheepAChangelog
     def all_lines
       res = []
       res << format_heading if @title != :empty
-      res += @lines unless @lines.empty?
-      res += @nodes.map(&:all_lines) unless @nodes.empty?
-      res += @anchor_lines unless @anchor_lines.empty?
+      res += all_lines_wo_heading
+      res
+    end
+
+    def all_lines_wo_heading
+      res = []
+      res += @lines
+      res += @nodes.map(&:all_lines)
+      res += @anchors.map { |a| "[#{a[:v]}]: #{a[:url]}" }
       res
     end
 
@@ -82,7 +92,7 @@ module SheepAChangelog
     def build_tree
       { title: @title,
         lines: @lines,
-        anchor_nodes: @anchor_lines,
+        anchors: @anchors,
         nodes: @nodes.map(&:build_tree) }
     end
   end
