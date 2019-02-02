@@ -1,6 +1,6 @@
 module SheepAChangelog
   class Node
-    attr_reader :lines, :title
+    attr_reader :lines, :title, :anchors
     attr_accessor :nodes
     def self.parse(string)
       new(string.split("\n"))

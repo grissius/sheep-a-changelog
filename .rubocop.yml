@@ -6,6 +6,8 @@ Documentation:
   Enabled: false
 Layout/IndentArray:
   EnforcedStyle: consistent
+Metrics/AbcSize:
+  Max: 16
 Metrics/LineLength:
   Exclude:
     - 'spec/**/*.rb'

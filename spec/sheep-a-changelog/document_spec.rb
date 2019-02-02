@@ -18,6 +18,10 @@ RSpec.describe SheepAChangelog::Document do
     expect(doc.first_version).to match(/Unreleased/)
   end
 
+  it 'diff_prefix' do
+    expect(doc.diff_prefix).to match('https://github.com/olivierlacan/keep-a-changelog/compare/')
+  end
+
   it 'rename_version' do
     new_version = 'foo_bar'
     doc.rename_version('[Unreleased]', new_version)
