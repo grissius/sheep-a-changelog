@@ -19,7 +19,6 @@ RSpec.describe SheepAChangelog::Document do
   end
 
   it 'diff_prefix' do
-    p doc.diff_prefix
     expect(doc.diff_prefix).to match('https://github.com/olivierlacan/keep-a-changelog/compare/')
   end
 
