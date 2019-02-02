@@ -6,4 +6,7 @@ RSpec.describe 'Meta data' do
            .map { |m| [m, SheepAChangelog::Meta.public_send(m)] }.to_h
     expect(meta).to match_snapshot
   end
+  it 'version returns semver' do
+    expect(SheepAChangelog::Meta.version).to match(/[0-9]+\.[0-9]+\.[0-9]+/)
+  end
 end
