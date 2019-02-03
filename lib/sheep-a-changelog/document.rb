@@ -34,5 +34,13 @@ module SheepAChangelog
         end
       end
     end
+
+    def add_anchor(name, from, to)
+      anchors.unshift({v: name, url: "#{diff_prefix}#{from}...#{to}"})
+    end
+
+    def remove_anchor_unreleased
+      anchors = anchors.reject { |a| a[:v] === 'Unreleased'}
+    end
   end
 end

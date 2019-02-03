@@ -28,4 +28,10 @@ RSpec.describe SheepAChangelog::Document do
     expect(doc.first_version).to match(new_version)
     expect(doc.build_tree).to match_snapshot
   end
+
+  it 'add_anchor' do
+    new_version = 'foo_bar'
+    doc.add_anchor('LABEL', 'vFROM', 'vTO')
+    expect(doc.anchors).to match_snapshot
+  end
 end
