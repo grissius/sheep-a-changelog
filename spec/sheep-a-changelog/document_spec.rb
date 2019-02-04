@@ -2,6 +2,7 @@ require 'sheep-a-changelog/node'
 require 'sheep-a-changelog/document'
 
 changelog = File.read(File.expand_path('examples/keepachangelog.md', __dir__))
+changelog2 = File.read(File.expand_path('examples/keepachangelog.2.0.0.md', __dir__))
 
 RSpec.describe SheepAChangelog::Document do
   subject(:doc) { SheepAChangelog::Document.new(changelog.split("\n")) }
@@ -14,8 +15,8 @@ RSpec.describe SheepAChangelog::Document do
     expect(doc.version_root.nodes.map(&:title)).to match_snapshot
   end
 
-  it 'first_version' do
-    expect(doc.first_version).to match(/Unreleased/)
+  it 'latest_version_title' do
+    expect(doc.latest_version_title).to match(/Unreleased/)
   end
 
   it 'diff_prefix' do
@@ -25,7 +26,17 @@ RSpec.describe SheepAChangelog::Document do
   it 'rename_version' do
     new_version = 'foo_bar'
     doc.rename_version('[Unreleased]', new_version)
-    expect(doc.first_version).to match(new_version)
+    expect(doc.latest_version_title).to match(new_version)
     expect(doc.build_tree).to match_snapshot
+  end
+
+  it 'add_anchor' do
+    doc.add_anchor('LABEL', 'vFROM', 'vTO')
+    expect(doc.anchors).to match_snapshot
+  end
+
+  it 'release' do
+    doc.release('2.0.0', 'v', Time.utc(2017, 6, 20))
+    expect(doc.to_s).to eql(changelog2)
   end
 end
