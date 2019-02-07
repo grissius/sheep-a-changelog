@@ -35,6 +35,7 @@ contents = File.read('./path/to/CHANGELOG.md')
 doc = SheepAChangelog.parse(contents)
 
 # TODO temper with the structure
+# See features section
 
 # Serialize back to string
 updated = doc.to_s
@@ -45,8 +46,91 @@ File.write('./path/to/CHANGELOG.md', updated)
 
 ## Features
 
-- :construction: Ensure unreleased
-- :construction: Release
+### Release
+This method performs the following actions:
+- Rename current _unreleased_ version log to _new version_
+- Add anchor for _new version_
+- Add empty _unreleased_
+- Update _unreleased_ anchor
+
+It accepts arguments
+1. `new_version` - semver format
+2. `tag_prefix` - prefix for `new_version` for git tags (used for anchors). Defaults to `v`
+3. `date` - date of the release, defaults to now
+
+```ruby
+doc.release('2.0.0', 'v', Time.utc(2017, 6, 20))
+```
+
+
+### Inspect element
+```ruby
+node.build_tree
+# :title - heading (string) or :empty for top-level node
+# :lines - string[] of contents belonging to this node, without anchors and child nodes
+# :anchors - { :v, :url } of anchor nodes
+# :nodes - child nodes
+```
+```yaml
+  :title: :empty
+  :lines: []
+  :anchors:
+  - :v: Unreleased
+    :url: https://github.com/olivierlacan/keep-a-changelog/compare/v1.0.0...HEAD
+  - :v: 1.0.0
+    :url: https://github.com/olivierlacan/keep-a-changelog/compare/v0.3.0...v1.0.0
+  :nodes:
+  - :title: Changelog
+    :lines:
+    - All notable changes to this project will be documented in this file.
+    - ''
+    - The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+    - and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+    - ''
+    :anchors: []
+    :nodes:
+    - :title: "[1.0.0] - 2017-06-20"
+      :lines: []
+      :anchors: []
+      :nodes:
+      - :title: Added
+        :lines:
+        - '- "Frequently Asked Questions" section.'
+        - ''
+        :anchors: []
+        :nodes: []
+```
+
+### Latest version title
+Returns the contents of the heading for the latest version.
+```ruby
+doc.latest_version_title
+# --> "[1.0.0] - 2017-06-20"
+```
+
+### Diff prefix
+Returns URL prefix for the anchors. If multiple used, return the most frequent.
+```ruby
+doc.diff_prefix
+# --> "https://github.com/olivierlacan/keep-a-changelog/compare/"
+```
+
+### Rename version
+Rename version. Looking for exact match. This only changes the title and keeps the contents (inlcuding all children intact.)
+```ruby
+doc.rename_version('[Unreleased]', new_version)
+```
+
+### Add anchor
+```ruby
+doc.add_anchor('LABEL', 'vFROM', 'vTO')
+# adds "[LABEL]: {diff_prefix}/vFROM...vTO" as the topmost anchor
+```
+
+## Todo
+
+- :heavy_check_mark: Ensure unreleased
+- :heavy_check_mark: Release
 - :construction: Initialize
 - :construction: Sort type sections
 - :construction: Fix typos in type sections
