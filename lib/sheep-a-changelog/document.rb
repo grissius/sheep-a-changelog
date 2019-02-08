@@ -37,7 +37,9 @@ module SheepAChangelog
       parent = version_root
       parent.nodes.map! do |node|
         if node.title == from
-          Node.new(node.all_lines_wo_heading.first, to, 2)
+          cloned = node.clone
+          cloned.title = to
+          cloned
         else
           node
         end
