@@ -2,7 +2,6 @@ require 'sheep-a-changelog/node'
 require 'sheep-a-changelog/document'
 
 changelog = File.read(File.expand_path('examples/keepachangelog.md', __dir__))
-changelog2 = File.read(File.expand_path('examples/keepachangelog.2.0.0.md', __dir__))
 
 RSpec.describe SheepAChangelog::Document do
   subject(:doc) { SheepAChangelog::Document.new(changelog.split("\n")) }
@@ -35,8 +34,19 @@ RSpec.describe SheepAChangelog::Document do
     expect(doc.anchors).to match_snapshot
   end
 
-  it 'release' do
-    doc.release('2.0.0', 'v', Time.utc(2017, 6, 20))
-    expect(doc.to_s).to eql(changelog2)
+  context 'release' do
+    it 'keep-a-changelog' do
+      changelog2 = File.read(File.expand_path('examples/keepachangelog.2.0.0.md', __dir__))
+      doc.release('2.0.0', 'v', Time.utc(2017, 6, 20))
+      expect(doc.to_s).to eql(changelog2)
+    end
+    it 'desmond' do
+      desmond = File.read(File.expand_path('examples/desmond.0.2.5.md', __dir__))
+      desmonddoc = SheepAChangelog::Document.new(desmond.split("\n"))
+      desmond030 = File.read(File.expand_path('examples/desmond.0.3.0.md', __dir__))
+      desmonddoc.release('0.3.0', 'v', Time.utc(2018, 11, 14))
+      File.write(File.expand_path('examples/desmond.0.3.0_.md', __dir__), desmonddoc.to_s)
+      expect(desmonddoc.to_s).to eql(desmond030)
+    end
   end
 end
