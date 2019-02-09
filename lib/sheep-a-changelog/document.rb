@@ -61,7 +61,7 @@ module SheepAChangelog
     def release(version, tag_prefix, t = Time.now)
       remove_anchor_unreleased
       rename_version('[Unreleased]', "[#{version}] - #{t.strftime('%Y-%m-%d')}")
-      add_anchor(version, tag_prefix + latest_version(1), version)
+      add_anchor(version, tag_prefix + latest_version(1), tag_prefix + version)
       add_empty_version('[Unreleased]')
       add_anchor('Unreleased', tag_prefix + version, 'HEAD')
     end
