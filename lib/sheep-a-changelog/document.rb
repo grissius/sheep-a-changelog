@@ -54,6 +54,10 @@ module SheepAChangelog
       anchors.reject! { |a| a[:v] == 'Unreleased' }
     end
 
+    def to_s
+      (all_lines + ['']).join("\n")
+    end
+
     def release(version, tag_prefix, t = Time.now)
       remove_anchor_unreleased
       rename_version('[Unreleased]', "[#{version}] - #{t.strftime('%Y-%m-%d')}")
