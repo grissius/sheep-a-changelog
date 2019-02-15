@@ -45,8 +45,14 @@ RSpec.describe SheepAChangelog::Document do
       desmonddoc = SheepAChangelog::Document.new(desmond.split("\n"))
       desmond030 = File.read(File.expand_path('examples/desmond.0.3.0.md', __dir__))
       desmonddoc.release('0.3.0', 'v', Time.utc(2018, 11, 14))
-      File.write(File.expand_path('examples/desmond.0.3.0_.md', __dir__), desmonddoc.to_s)
       expect(desmonddoc.to_s).to eql(desmond030)
+    end
+    it 'empty' do
+      empty = File.read(File.expand_path('examples/empty.md', __dir__))
+      emptydoc = SheepAChangelog.parse(empty)
+      emptyX = File.read(File.expand_path('examples/emptyX.md', __dir__))
+      emptydoc.release('X', 'version', Time.utc(0))
+      expect(emptydoc.to_s).to eql(emptyX)
     end
   end
 end
