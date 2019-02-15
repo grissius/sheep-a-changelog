@@ -2,7 +2,6 @@ require 'sheep-a-changelog/node'
 require 'sheep-a-changelog/document'
 
 changelog = File.read(File.expand_path('examples/keepachangelog.md', __dir__))
-changelog2 = File.read(File.expand_path('examples/keepachangelog.2.0.0.md', __dir__))
 
 RSpec.describe SheepAChangelog::Document do
   subject(:doc) { SheepAChangelog::Document.new(changelog.split("\n")) }
@@ -19,8 +18,15 @@ RSpec.describe SheepAChangelog::Document do
     expect(doc.latest_version_title).to match(/Unreleased/)
   end
 
-  it 'diff_prefix' do
-    expect(doc.diff_prefix).to match('https://github.com/olivierlacan/keep-a-changelog/compare/')
+  context 'diff_prefix' do
+    it 'example' do
+      expect(doc.diff_prefix).to match('https://github.com/olivierlacan/keep-a-changelog/compare/')
+    end
+    it 'sneaky' do
+      sneaky = File.read(File.expand_path('examples/sneaky-anchors.md', __dir__))
+      doc = SheepAChangelog.parse(sneaky)
+      expect(doc.diff_prefix).to match('https://github.com/olivierlacan/keep-a-changelog/compare/')
+    end
   end
 
   it 'rename_version' do
@@ -35,8 +41,34 @@ RSpec.describe SheepAChangelog::Document do
     expect(doc.anchors).to match_snapshot
   end
 
-  it 'release' do
-    doc.release('2.0.0', 'v', Time.utc(2017, 6, 20))
-    expect(doc.to_s).to eql(changelog2)
+  context 'release' do
+    it 'multiple releases' do
+      x = doc.to_s
+      10.times do
+        doc = SheepAChangelog.parse(x)
+        doc.release('2.0.0', 'v')
+        x = doc.to_s
+      end
+      expect(x.to_s).to match_snapshot
+    end
+    it 'keep-a-changelog' do
+      changelog2 = File.read(File.expand_path('examples/keepachangelog.2.0.0.md', __dir__))
+      doc.release('2.0.0', 'v', Time.utc(2017, 6, 20))
+      expect(doc.to_s).to eql(changelog2)
+    end
+    it 'desmond' do
+      desmond = File.read(File.expand_path('examples/desmond.0.2.5.md', __dir__))
+      desmonddoc = SheepAChangelog::Document.new(desmond.split("\n"))
+      desmond030 = File.read(File.expand_path('examples/desmond.0.3.0.md', __dir__))
+      desmonddoc.release('0.3.0', 'v', Time.utc(2018, 11, 14))
+      expect(desmonddoc.to_s).to eql(desmond030)
+    end
+    it 'empty' do
+      empty = File.read(File.expand_path('examples/empty.md', __dir__))
+      emptydoc = SheepAChangelog.parse(empty)
+      empty_x = File.read(File.expand_path('examples/emptyX.md', __dir__))
+      emptydoc.release('X', 'version', Time.utc(0))
+      expect(emptydoc.to_s).to eql(empty_x)
+    end
   end
 end

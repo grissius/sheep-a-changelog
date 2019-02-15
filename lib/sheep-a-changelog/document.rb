@@ -37,7 +37,9 @@ module SheepAChangelog
       parent = version_root
       parent.nodes.map! do |node|
         if node.title == from
-          Node.new(node.all_lines_wo_heading.first, to, 2)
+          cloned = node.clone
+          cloned.title = to
+          cloned
         else
           node
         end
@@ -52,10 +54,14 @@ module SheepAChangelog
       anchors.reject! { |a| a[:v] == 'Unreleased' }
     end
 
+    def to_s
+      (all_lines + ['']).join("\n")
+    end
+
     def release(version, tag_prefix, t = Time.now)
       remove_anchor_unreleased
       rename_version('[Unreleased]', "[#{version}] - #{t.strftime('%Y-%m-%d')}")
-      add_anchor(version, tag_prefix + latest_version(1), version)
+      add_anchor(version, tag_prefix + latest_version(1), tag_prefix + version)
       add_empty_version('[Unreleased]')
       add_anchor('Unreleased', tag_prefix + version, 'HEAD')
     end
