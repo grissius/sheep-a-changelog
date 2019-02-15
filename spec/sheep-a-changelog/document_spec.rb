@@ -18,8 +18,15 @@ RSpec.describe SheepAChangelog::Document do
     expect(doc.latest_version_title).to match(/Unreleased/)
   end
 
-  it 'diff_prefix' do
-    expect(doc.diff_prefix).to match('https://github.com/olivierlacan/keep-a-changelog/compare/')
+  context 'diff_prefix' do
+    it 'example' do
+      expect(doc.diff_prefix).to match('https://github.com/olivierlacan/keep-a-changelog/compare/')
+    end
+    it 'sneaky' do
+      sneaky = File.read(File.expand_path('examples/sneaky-anchors.md', __dir__))
+      doc = SheepAChangelog.parse(sneaky)
+      expect(doc.diff_prefix).to match('https://github.com/olivierlacan/keep-a-changelog/compare/')
+    end
   end
 
   it 'rename_version' do
