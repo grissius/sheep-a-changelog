@@ -35,6 +35,15 @@ RSpec.describe SheepAChangelog::Document do
   end
 
   context 'release' do
+    it 'multiple releases' do
+      x = doc.to_s
+      10.times do |n|
+        doc = SheepAChangelog.parse(x)
+        doc.release('2.0.0', 'v')
+        x = doc.to_s
+      end
+      expect(x.to_s).to match_snapshot
+    end
     it 'keep-a-changelog' do
       changelog2 = File.read(File.expand_path('examples/keepachangelog.2.0.0.md', __dir__))
       doc.release('2.0.0', 'v', Time.utc(2017, 6, 20))
