@@ -44,7 +44,7 @@ RSpec.describe SheepAChangelog::Document do
   context 'release' do
     it 'multiple releases' do
       x = doc.to_s
-      10.times do |n|
+      10.times do
         doc = SheepAChangelog.parse(x)
         doc.release('2.0.0', 'v')
         x = doc.to_s
@@ -66,9 +66,9 @@ RSpec.describe SheepAChangelog::Document do
     it 'empty' do
       empty = File.read(File.expand_path('examples/empty.md', __dir__))
       emptydoc = SheepAChangelog.parse(empty)
-      emptyX = File.read(File.expand_path('examples/emptyX.md', __dir__))
+      empty_x = File.read(File.expand_path('examples/emptyX.md', __dir__))
       emptydoc.release('X', 'version', Time.utc(0))
-      expect(emptydoc.to_s).to eql(emptyX)
+      expect(emptydoc.to_s).to eql(empty_x)
     end
   end
 end
