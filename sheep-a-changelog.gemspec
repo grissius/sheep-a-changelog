@@ -1,14 +1,14 @@
 require_relative 'lib/sheep-a-changelog/meta'
 
 Gem::Specification.new do |s|
-  s.name        = SheepAChangelog::Meta.name
-  s.version     = SheepAChangelog::Meta.version
-  s.homepage    = SheepAChangelog::Meta.homepage
-  s.license     = SheepAChangelog::Meta.license
-  s.author      = SheepAChangelog::Meta.author
-  s.email       = SheepAChangelog::Meta.email
+  s.name = SheepAChangelog::Meta.name
+  s.version = SheepAChangelog::Meta.version
+  s.homepage = SheepAChangelog::Meta.homepage
+  s.license = SheepAChangelog::Meta.license
+  s.author = SheepAChangelog::Meta.author
+  s.email = SheepAChangelog::Meta.email
 
-  s.summary     = SheepAChangelog::Meta.summary
+  s.summary = SheepAChangelog::Meta.summary
   s.description = SheepAChangelog::Meta.description
 
   s.files = Dir['lib/**/*',
@@ -18,6 +18,8 @@ Gem::Specification.new do |s|
                 'VERSION']
 
   s.required_ruby_version = '>= 2.2'
+
+  s.add_runtime_dependency 'git', '~> 1.5'
 
   s.add_development_dependency 'coveralls', '~> 0.8'
   s.add_development_dependency 'rake', '~> 12.0'
