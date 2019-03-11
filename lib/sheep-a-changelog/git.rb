@@ -45,10 +45,16 @@ module SheepAChangelog
     def self.init_changelog(path)
       g = ::Git.open(path)
       tags = g.tags
+      last = g.gcommit('HEAD')
+      while (last.parent)
+        last = last.parent
+      end
       root_node = Node.new([], :empty, 0)
       h1_node = Node.new(['TODO', ''], 'Changelog', 1)
 
-      h1_node.nodes = tags.map(&:name).each_cons(2).each_with_object([]) do |ts, ver_nodes|
+      milestone_refs = [last.to_s, *tags.map(&:name)]
+      h1_node.nodes = milestone_refs.each_cons(2).each_with_object([]) do |ts, ver_nodes|
+        p ts
         title = "[#{ts[1]}] - #{g.gcommit(ts[1]).date.strftime('%Y-%m-%d')}"
         messages = g.log.between(*ts).map(&:message).map { |msg| msg.split("\n").first }
         ver_node = create_version_node(messages, title)
