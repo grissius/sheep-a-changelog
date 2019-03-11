@@ -5,33 +5,38 @@ require 'git'
 module SheepAChangelog
   module Git
     def self.categorieze(msg)
+      trim_first = -> (s) { s.split(' ').drop(1).join(' ').capitalize }
       case msg
       when /secur/i
-        :security
+        [:security, msg]
       when /^add/i
-        :added
+        [:added, trim_first.call(msg)]
       when /^change/i
-        :changed
+        [:changed, trim_first.call(msg)]
+      when /^update/i, /^refactor/i
+        [:changed, msg]
       when /^deprecate/i
-        :deprecated
+        [:deprecated, trim_first.call(msg)]
       when /^remove/i
-        :removed
+        [:removed, trim_first.call(msg)]
       when /^fix/i
-        :fixed
+        [:fixed, trim_first.call(msg)]
       else
-        :default
+        [:_default, msg]
       end
     end
 
     def self.create_version_node(messages, title)
-      buckets = messages.each_with_object(Hash.new([])) do |m, res|
-        res[categorieze(m)] += [m]
+      buckets = messages.each_with_object(Hash.new([])) do |msg, res|
+        next if msg.match?(/^(Merge|Release)/)
+        c, m = categorieze(msg)
+        res[c] += [m]
       end
       ver_node = Node.new([], title, 2)
       # TODO: Handle default
       ver_node.nodes = buckets.keys.sort.each_with_object([]) do |k, res|
         lines = (buckets[k]).map { |l| ' - ' + l } + ['']
-        node = Node.new(lines, k.to_s, 3)
+        node = Node.new(lines, k.to_s.capitalize, 3)
         res << node
       end
       ver_node
