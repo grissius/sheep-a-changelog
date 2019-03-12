@@ -26,6 +26,16 @@ module SheepAChangelog
       end
     end
 
+    def self.preamble
+      [
+        'All notable changes to this project will be documented in this file.',
+        '',
+        'The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),',
+        'and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).',
+        '',
+      ]
+    end
+
     def self.create_version_node(messages, title)
       buckets = messages.each_with_object(Hash.new([])) do |msg, res|
         next if msg.match?(/^(Merge|Release)/)
@@ -50,7 +60,7 @@ module SheepAChangelog
         last = last.parent
       end
       root_node = Node.new([], :empty, 0)
-      h1_node = Node.new(['TODO', ''], 'Changelog', 1)
+      h1_node = Node.new(self.preamble, 'Changelog', 1)
 
       anchors = []
       milestone_refs = [last.to_s, *tags.map(&:name)]
