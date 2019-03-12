@@ -52,15 +52,19 @@ module SheepAChangelog
       root_node = Node.new([], :empty, 0)
       h1_node = Node.new(['TODO', ''], 'Changelog', 1)
 
+      anchors = []
       milestone_refs = [last.to_s, *tags.map(&:name)]
       h1_node.nodes = milestone_refs.each_cons(2).each_with_object([]) do |ts, ver_nodes|
-        p ts
-        title = "[#{ts[1]}] - #{g.gcommit(ts[1]).date.strftime('%Y-%m-%d')}"
-        messages = g.log.between(*ts).map(&:message).map { |msg| msg.split("\n").first }
+        from, to = ts
+        title = "[#{to}] - #{g.gcommit(to).date.strftime('%Y-%m-%d')}"
+        messages = g.log.between(from, to).map(&:message).map { |msg| msg.split("\n").first }
         ver_node = create_version_node(messages, title)
         ver_nodes.unshift(ver_node)
+        url = ''
+        anchors.unshift(url: "#{url}/compare/#{from}...#{to}", v: to)
       end
       root_node.nodes = [h1_node]
+      root_node.anchors = anchors
       puts root_node.to_s
     end
   end
