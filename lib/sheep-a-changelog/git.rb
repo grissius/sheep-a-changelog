@@ -52,6 +52,11 @@ module SheepAChangelog
       ver_node
     end
 
+    def self.parse_anchor_url(remote_url)
+      match, user, host, path = remote_url.match(/([^@]+)@([^:]+):(.*)\.git/).to_a
+      "https://#{host}/#{path}"
+    end
+
     def self.init_changelog(path)
       g = ::Git.open(path)
       tags = g.tags
@@ -70,7 +75,7 @@ module SheepAChangelog
         messages = g.log.between(from, to).map(&:message).map { |msg| msg.split("\n").first }
         ver_node = create_version_node(messages, title)
         ver_nodes.unshift(ver_node)
-        url = ''
+        url = self.parse_anchor_url(g.remotes.first.url)
         anchors.unshift(url: "#{url}/compare/#{from}...#{to}", v: to)
       end
       root_node.nodes = [h1_node]
