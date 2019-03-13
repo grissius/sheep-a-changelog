@@ -81,7 +81,7 @@ module SheepAChangelog
       end
       root_node.nodes = [h1_node]
       root_node.anchors = anchors
-      puts root_node.to_s
+      root_node
     end
   end
 end
