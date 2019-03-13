@@ -4,8 +4,19 @@ require 'git'
 
 module SheepAChangelog
   class RepoInspector
+    def initialize(path, options = {})
+      @git = ::Git.open(path)
+      @options = options
+    end
+
+    def root_commit
+      head = @git.gcommit('HEAD')
+      head = head.parent while head.parent
+      head
+    end
+
     def self.categorieze(msg)
-      trim_first = -> (s) { s.split(' ').drop(1).join(' ').capitalize }
+      trim_first = ->(s) { s.split(' ').drop(1).join(' ').capitalize }
       case msg
       when /secur/i
         [:security, msg]
@@ -32,13 +43,14 @@ module SheepAChangelog
         '',
         'The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),',
         'and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).',
-        '',
+        ''
       ]
     end
 
     def self.create_version_node(messages, title)
       buckets = messages.each_with_object(Hash.new([])) do |msg, res|
         next if msg.match?(/^(Merge|Release)/)
+
         c, m = categorieze(msg)
         res[c] += [m]
       end
@@ -52,32 +64,29 @@ module SheepAChangelog
       ver_node
     end
 
-    def self.parse_anchor_url(remote_url)
+    def anchor_url
+      remote_url = @git.remotes.first.url
       match, user, host, path = remote_url.match(/([^@]+)@([^:]+):(.*)\.git/).to_a
       "https://#{host}/#{path}"
     end
 
-    def self.init_changelog(path)
-      g = ::Git.open(path)
-      tags = g.tags
-      last = g.gcommit('HEAD')
-      while (last.parent)
-        last = last.parent
-      end
+    def milestone_refs
+      pfx = @options[:tag_prefix] || 'v'
+      [root_commit.to_s, *@git.tags.map(&:name).select { |t| t.start_with?(pfx) }]
+    end
+
+    def init_changelog
       root_node = Node.new([], :empty, 0)
-      h1_node = Node.new(self.preamble, 'Changelog', 1)
+      h1_node = Node.new(RepoInspector.preamble, 'Changelog', 1)
 
       anchors = []
-      version_prefix = 'v'
-      milestone_refs = [last.to_s, *tags.map(&:name).select { |t| t.start_with?(version_prefix) }]
       h1_node.nodes = milestone_refs.each_cons(2).each_with_object([]) do |ts, ver_nodes|
         from, to = ts
-        title = "[#{to}] - #{g.gcommit(to).date.strftime('%Y-%m-%d')}"
-        messages = g.log.between(from, to).map(&:message).map { |msg| msg.split("\n").first }
-        ver_node = create_version_node(messages, title)
+        title = "[#{to}] - #{@git.gcommit(to).date.strftime('%Y-%m-%d')}"
+        messages = @git.log.between(from, to).map(&:message).map { |msg| msg.split("\n").first }
+        ver_node = RepoInspector.create_version_node(messages, title)
         ver_nodes.unshift(ver_node)
-        url = self.parse_anchor_url(g.remotes.first.url)
-        anchors.unshift(url: "#{url}/compare/#{from}...#{to}", v: to)
+        anchors.unshift(url: "#{anchor_url}/compare/#{from}...#{to}", v: to)
       end
       root_node.nodes = [h1_node]
       root_node.anchors = anchors
