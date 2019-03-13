@@ -3,7 +3,7 @@ require_relative 'node'
 require 'git'
 
 module SheepAChangelog
-  module Git
+  class RepoInspector
     def self.categorieze(msg)
       trim_first = -> (s) { s.split(' ').drop(1).join(' ').capitalize }
       case msg

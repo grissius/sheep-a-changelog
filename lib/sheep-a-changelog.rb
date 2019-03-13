@@ -1,5 +1,5 @@
 require_relative 'sheep-a-changelog/parser'
-require_relative 'sheep-a-changelog/git'
+require_relative 'sheep-a-changelog/repo_inspector'
 
 module SheepAChangelog
   def self.parse(changelog)
@@ -7,6 +7,6 @@ module SheepAChangelog
   end
 
   def self.init_changelog(path = Dir.pwd)
-    Git.init_changelog(path)
+    RepoInspector.init_changelog(Dir.pwd)
   end
 end
