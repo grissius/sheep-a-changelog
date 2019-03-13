@@ -68,7 +68,8 @@ module SheepAChangelog
       h1_node = Node.new(self.preamble, 'Changelog', 1)
 
       anchors = []
-      milestone_refs = [last.to_s, *tags.map(&:name)]
+      version_prefix = 'v'
+      milestone_refs = [last.to_s, *tags.map(&:name).select { |t| t.start_with?(version_prefix) }]
       h1_node.nodes = milestone_refs.each_cons(2).each_with_object([]) do |ts, ver_nodes|
         from, to = ts
         title = "[#{to}] - #{g.gcommit(to).date.strftime('%Y-%m-%d')}"
