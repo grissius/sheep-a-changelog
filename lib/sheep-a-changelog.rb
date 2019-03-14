@@ -7,6 +7,6 @@ module SheepAChangelog
   end
 
   def self.init_changelog(path = Dir.pwd)
-    RepoInspector.init_changelog(Dir.pwd)
+    RepoInspector.new(path).init_changelog
   end
 end

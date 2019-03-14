@@ -7,6 +7,7 @@ module SheepAChangelog
     def initialize(path, options = {})
       @git = ::Git.open(path)
       @options = options
+      @tag_prefix = @options[:tag_prefix] || 'v'
     end
 
     def root_commit
@@ -16,7 +17,7 @@ module SheepAChangelog
     end
 
     def self.categorieze(msg)
-      trim_first = ->(s) { s.split(' ').drop(1).join(' ').capitalize }
+      trim_first = -> (s) { s.split(' ').drop(1).join(' ').capitalize }
       case msg
       when /secur/i
         [:security, msg]
@@ -43,7 +44,7 @@ module SheepAChangelog
         '',
         'The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),',
         'and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).',
-        ''
+        '',
       ]
     end
 
@@ -71,8 +72,11 @@ module SheepAChangelog
     end
 
     def milestone_refs
-      pfx = @options[:tag_prefix] || 'v'
-      [root_commit.to_s, *@git.tags.map(&:name).select { |t| t.start_with?(pfx) }]
+      [root_commit.to_s, *@git.tags.map(&:name).select { |t| t.start_with?(@tag_prefix) }]
+    end
+
+    def remove_prefix(version_tag)
+      version_tag.reverse.chomp(@tag_prefix.reverse).reverse
     end
 
     def init_changelog
@@ -82,7 +86,7 @@ module SheepAChangelog
       anchors = []
       h1_node.nodes = milestone_refs.each_cons(2).each_with_object([]) do |ts, ver_nodes|
         from, to = ts
-        title = "[#{to}] - #{@git.gcommit(to).date.strftime('%Y-%m-%d')}"
+        title = "[#{remove_prefix(to)}] - #{@git.gcommit(to).date.strftime('%Y-%m-%d')}"
         messages = @git.log.between(from, to).map(&:message).map { |msg| msg.split("\n").first }
         ver_node = RepoInspector.create_version_node(messages, title)
         ver_nodes.unshift(ver_node)
