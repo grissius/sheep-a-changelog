@@ -72,10 +72,11 @@ module SheepAChangelog
     end
 
     def milestone_refs
-      [root_commit.to_s, *@git.tags.map(&:name).select { |t| t.start_with?(@tag_prefix) }]
+      [root_commit.to_s, *@git.tags.map(&:name).select { |t| t.start_with?(@tag_prefix) }, 'HEAD']
     end
 
-    def remove_prefix(version_tag)
+    def format_version(version_tag)
+      return 'Unreleased' if version_tag == 'HEAD'
       version_tag.reverse.chomp(@tag_prefix.reverse).reverse
     end
 
@@ -86,11 +87,12 @@ module SheepAChangelog
       anchors = []
       h1_node.nodes = milestone_refs.each_cons(2).each_with_object([]) do |ts, ver_nodes|
         from, to = ts
-        title = "[#{remove_prefix(to)}] - #{@git.gcommit(to).date.strftime('%Y-%m-%d')}"
+        # TODO: No date on Unreleased
+        title = "[#{format_version(to)}] - #{@git.gcommit(to).date.strftime('%Y-%m-%d')}"
         messages = @git.log.between(from, to).map(&:message).map { |msg| msg.split("\n").first }
         ver_node = RepoInspector.create_version_node(messages, title)
         ver_nodes.unshift(ver_node)
-        anchors.unshift(url: "#{anchor_url}/compare/#{from}...#{to}", v: to)
+        anchors.unshift(url: "#{anchor_url}/compare/#{from}...#{to}", v: format_version(to))
       end
       root_node.nodes = [h1_node]
       root_node.anchors = anchors
