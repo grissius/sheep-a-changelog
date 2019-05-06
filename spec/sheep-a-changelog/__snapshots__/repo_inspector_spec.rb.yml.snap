@@ -6,28 +6,6 @@
   The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-  ## [Unreleased] - 2019-03-14
-  ### _default
-   - Renmae git to repo inspector
-   - Improve category matching
-
-  ### Added
-   - Removing prefix from version title
-   - Basic snapshot test
-   - Version_prefix draft
-   - Real anchor url
-   - Changelog preamble
-   - Anchors
-   - Root commit to the chain
-   - Simple changelog generation
-   - Git dependency
-
-  ### Changed
-   - Refactor inspector to class
-
-  ### Fixed
-   - Release tests
-
   ## [0.3.0] - 2019-02-15
   ### Added
    - Sneky anchors example
