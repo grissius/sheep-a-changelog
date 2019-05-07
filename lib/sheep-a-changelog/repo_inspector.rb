@@ -98,5 +98,10 @@ module SheepAChangelog
       root_node.anchors = anchors
       root_node
     end
+
+    def suggest_unreleased
+      doc = self.init_changelog
+      doc.nodes.first.nodes.first
+    end
   end
 end
