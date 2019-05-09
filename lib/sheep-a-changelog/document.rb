@@ -27,10 +27,10 @@ module SheepAChangelog
 
     def diff_prefix
       anchors.map { |a| a[:url].match(%r{^(.*\/)(.*\.\.\..*)$}).to_a[1] }
-             .each_with_object(Hash.new(0)) { |word, counts| counts[word] += 1 }
-             .to_a
-             .min { |a, b| b[1] <=> a[1] }
-             .first
+        .each_with_object(Hash.new(0)) { |word, counts| counts[word] += 1 }
+        .to_a
+        .min { |a, b| b[1] <=> a[1] }
+        .first
     end
 
     def rename_version(from, to)

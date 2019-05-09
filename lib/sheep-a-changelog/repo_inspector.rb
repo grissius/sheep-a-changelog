@@ -2,6 +2,14 @@ require_relative 'document'
 require_relative 'node'
 require 'git'
 
+KEEP_A_CACHANGELOG_PREAMBLE = [
+  'All notable changes to this project will be documented in this file.',
+  '',
+  'The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),',
+  'and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).',
+  '',
+].freeze
+
 module SheepAChangelog
   class RepoInspector
     def initialize(path, options = {})
@@ -38,16 +46,6 @@ module SheepAChangelog
       end
     end
 
-    def self.preamble
-      [
-        'All notable changes to this project will be documented in this file.',
-        '',
-        'The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),',
-        'and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).',
-        '',
-      ]
-    end
-
     def self.create_version_node(messages, title)
       buckets = messages.each_with_object(Hash.new([])) do |msg, res|
         next if msg.match?(/^(Merge|Release)/)
@@ -67,40 +65,61 @@ module SheepAChangelog
 
     def anchor_url
       remote_url = @git.remotes.first.url
-      match, user, host, path = remote_url.match(/([^@]+)@([^:]+):(.*)\.git/).to_a
+      _match, _user, host, path = remote_url
+        .match(/([^@]+)@([^:]+):(.*)\.git/).to_a
       "https://#{host}/#{path}"
     end
 
     def milestone_refs
-      [root_commit.to_s, *@git.tags.map(&:name).select { |t| t.start_with?(@tag_prefix) }, 'HEAD']
+      [
+        root_commit.to_s,
+        *@git.tags.map(&:name)
+          .select { |t| t.start_with?(@tag_prefix) },
+        'HEAD',
+      ]
     end
 
     def format_version(version_tag)
       return 'Unreleased' if version_tag == 'HEAD'
+
       version_tag.reverse.chomp(@tag_prefix.reverse).reverse
+    end
+
+    def create_milestone_nodes
+      anchors = []
+      nodes = milestone_refs
+        .each_cons(2)
+        .each_with_object([]) do |ts, ver_nodes|
+        from, to = ts
+        # TODO: No date on Unreleased
+        date = @git.gcommit(to).date.strftime('%Y-%m-%d')
+        title = "[#{format_version(to)}] - #{date}"
+        messages = @git.log
+          .between(from, to).map(&:message).map { |msg| msg.split("\n").first }
+        ver_node = RepoInspector.create_version_node(messages, title)
+        ver_nodes.unshift(ver_node)
+        anchors
+          .unshift(
+            url: "#{anchor_url}/compare/#{from}...#{to}",
+            v: format_version(to),
+          )
+      end
+      [nodes, anchors]
     end
 
     def init_changelog
       root_node = Node.new([], :empty, 0)
-      h1_node = Node.new(RepoInspector.preamble, 'Changelog', 1)
+      h1_node = Node.new(KEEP_A_CACHANGELOG_PREAMBLE, 'Changelog', 1)
 
-      anchors = []
-      h1_node.nodes = milestone_refs.each_cons(2).each_with_object([]) do |ts, ver_nodes|
-        from, to = ts
-        # TODO: No date on Unreleased
-        title = "[#{format_version(to)}] - #{@git.gcommit(to).date.strftime('%Y-%m-%d')}"
-        messages = @git.log.between(from, to).map(&:message).map { |msg| msg.split("\n").first }
-        ver_node = RepoInspector.create_version_node(messages, title)
-        ver_nodes.unshift(ver_node)
-        anchors.unshift(url: "#{anchor_url}/compare/#{from}...#{to}", v: format_version(to))
-      end
+      nodes, anchors = create_milestone_nodes
+      h1_node.nodes = nodes
       root_node.nodes = [h1_node]
       root_node.anchors = anchors
       root_node
     end
 
     def suggest_unreleased
-      doc = self.init_changelog
+      doc = init_changelog
       doc.nodes.first.nodes.first
     end
   end

@@ -15,7 +15,7 @@ module SheepAChangelog
     end
 
     # Contruct nodes for current node from all lines
-    def build_nodes(lines, next_level) # rubocop:disable Metrics/MethodLength
+    def build_nodes(lines, next_level)
       last = nil
       line_buff = []
       (lines + [:last]).each_with_object([]) do |line, nodes|
@@ -42,11 +42,11 @@ module SheepAChangelog
       end
       # if no matches, it is content lines
       content_lines = groups_lines
-                      .select { |x| x.first.empty? }.map { |_, l| l }
+        .select { |x| x.first.empty? }.map { |_, l| l }
       # if matches, it is link
       anchors = groups_lines
-                .reject { |x| x.first.empty? }
-                .map { |groups, _| { v: groups[1], url: groups[2] } }
+        .reject { |x| x.first.empty? }
+        .map { |groups, _| { v: groups[1], url: groups[2] } }
       [content_lines, anchors]
     end
 

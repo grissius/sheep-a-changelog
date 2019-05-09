@@ -6,8 +6,22 @@ Documentation:
   Enabled: false
 Layout/IndentArray:
   EnforcedStyle: consistent
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+Metrics/MethodLength:
+  Max: 20
+Metrics/CyclomaticComplexity:
+  Max: 10
 Metrics/AbcSize:
-  Max: 16
+  Max: 25
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: comma
+Layout/SpaceInLambdaLiteral:
+  EnforcedStyle: require_space
 Metrics/LineLength:
   Exclude:
     - 'spec/**/*.rb'
