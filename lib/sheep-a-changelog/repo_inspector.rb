@@ -48,7 +48,7 @@ module SheepAChangelog
 
     def self.create_version_node(messages, title)
       buckets = messages.each_with_object(Hash.new([])) do |msg, res|
-        next if msg.match?(/^(Merge|Release)/)
+        next if msg =~ /^(Merge|Release)/
 
         c, m = categorieze(msg)
         res[c] += [m]
