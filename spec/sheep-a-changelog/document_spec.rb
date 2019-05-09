@@ -46,7 +46,7 @@ RSpec.describe SheepAChangelog::Document do
       x = doc.to_s
       10.times do
         doc = SheepAChangelog.parse(x)
-        doc.release('2.0.0', 'v')
+        doc.release('2.0.0', 'v', Time.new(2019, 2, 15))
         x = doc.to_s
       end
       expect(x.to_s).to match_snapshot

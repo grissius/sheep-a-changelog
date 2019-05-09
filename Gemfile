@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+gem 'git', '~> 1.5'
+
 group :test, :development do
   gem 'coveralls', require: false
   gem 'rake', '~> 12.0'

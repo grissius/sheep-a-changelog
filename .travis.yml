@@ -5,6 +5,7 @@ rvm:
 - 2.4
 - 2.5
 script:
+- git remote add origin git@github.com:grissius/sheep-a-changelog.git
 - bundle exec rake test
 - bundle exec rake cs
 deploy:

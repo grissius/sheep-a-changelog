@@ -1,0 +1,100 @@
+---
+"./spec/sheep-a-changelog/repo_inspector_spec.rb[1:1]": |-
+  # Changelog
+  All notable changes to this project will be documented in this file.
+
+  The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+  and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+  ## [0.3.0] - 2019-02-15
+  ### Added
+   - Sneky anchors example
+   - Repeated release test
+   - Rufo config
+   - Empty test
+   - Desmond example and test
+
+  ### Changed
+   - Update changelog
+   - Update changelog
+
+  ### Fixed
+   - Coding style
+   - Missing prefix for anchor tag
+   - Missing ending newline (add in doc)
+   - #8
+
+  ## [0.2.0] - 2019-02-07
+  ### _default
+   - Reduce pick_lines complexity
+   - Use anchors instead of anchor_lines
+
+  ### Added
+   - Release
+   - Add_anchor, remove unreleased
+   - Diff prefix fn
+   - Test for meta.version
+   - Simple document manip methods
+   - Document class
+   - Rubocop exception
+   - Top-level api
+
+  ### Changed
+   - Update docs
+   - Refactor pick_lines
+   - Refactor pick_lines
+   - Update readme
+
+  ### Fixed
+   - Tests
+   - Rename version, update tests
+
+  ### Removed
+   - Log
+
+  ## [0.1.4] - 2019-01-14
+  ### Fixed
+   - Rubygems key
+
+  ## [0.1.3] - 2019-01-14
+  ### Changed
+   - Update travis deploy
+
+  ## [0.1.2] - 2019-01-14
+  ### Added
+   - Rubygems deploy
+
+  ### Changed
+   - Update changelog
+
+  ## [0.1.1] - 2019-01-14
+  ### Removed
+   - Version from meta snapshot test
+
+  ## [0.1.0] - 2019-01-14
+  ### _default
+   - wip
+
+  ### Added
+   - Changelog, release 0.1.0
+   - Readme
+   - License
+   - Anchor line parsing
+   - Node hierarchy tests
+   - Trivial implementation of the parser
+
+  ### Changed
+   - Refactor node building
+   - Refactor node
+
+  ### Fixed
+   - Coding style
+
+  [Unreleased]: https://github.com/grissius/sheep-a-changelog/compare/v0.3.0...HEAD
+  [0.3.0]: https://github.com/grissius/sheep-a-changelog/compare/v0.2.0...v0.3.0
+  [0.2.0]: https://github.com/grissius/sheep-a-changelog/compare/v0.1.4...v0.2.0
+  [0.1.4]: https://github.com/grissius/sheep-a-changelog/compare/v0.1.3...v0.1.4
+  [0.1.3]: https://github.com/grissius/sheep-a-changelog/compare/v0.1.2...v0.1.3
+  [0.1.2]: https://github.com/grissius/sheep-a-changelog/compare/v0.1.1...v0.1.2
+  [0.1.1]: https://github.com/grissius/sheep-a-changelog/compare/v0.1.0...v0.1.1
+  [0.1.0]: https://github.com/grissius/sheep-a-changelog/compare/c0b1f8cc973aa1ec2321a0820743cc29bab03a3b...v0.1.0
